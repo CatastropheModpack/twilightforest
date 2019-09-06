@@ -34,6 +34,7 @@ public abstract class BlockTFGiantBlock extends Block {
 	public void registerBlockIcons(IIconRegister par1IconRegister) {
 		this.giantIcon = new GiantBlockIcon[4][4][6];
 
+		try {
 		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 4; y++) {
 				for (int side = 0; side < 6; side++) {
@@ -41,9 +42,12 @@ public abstract class BlockTFGiantBlock extends Block {
 				}
 			}
 		}
+		}catch(Exception e) {
+			//Do nothing
+		}
 	}
-	
-	
+
+
 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
@@ -63,9 +67,9 @@ public abstract class BlockTFGiantBlock extends Block {
     	case 5:
         	return this.giantIcon[3 - (z & 3)][3 - (y & 3)][side];
     	}
-    	
+
     }
-    
+
     /**
      * Gets the block's texture. Args: side, meta
      */
@@ -74,18 +78,18 @@ public abstract class BlockTFGiantBlock extends Block {
     {
         return this.giantIcon[0][0][side];
     }
-    
+
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-    	
+
     	int bx = (x >> 2) << 2;
     	int by = (y >> 2) << 2;
     	int bz = (z >> 2) << 2;
-    	
+
     	boolean allReplaceable = true;
-    	
+
     	for (int dx = 0; dx < 4; dx++) {
     		for (int dy = 0; dy < 4; dy++) {
     			for (int dz = 0; dz < 4; dz++) {
@@ -96,7 +100,7 @@ public abstract class BlockTFGiantBlock extends Block {
 
         return super.canPlaceBlockAt(world, x, y, z) && allReplaceable;
     }
-    
+
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)
@@ -105,10 +109,10 @@ public abstract class BlockTFGiantBlock extends Block {
     	int bx = (x >> 2) << 2;
     	int by = (y >> 2) << 2;
     	int bz = (z >> 2) << 2;
-    	
+
         return AxisAlignedBB.getBoundingBox((double)bx + this.minX, (double)by + this.minY, (double)bz + this.minZ, (double)bx + this.maxX * 4F, (double)by + this.maxY * 4F, (double)bz + this.maxZ * 4F);
     }
-    
+
     /**
      * Called when the block is placed in the world.
      */
@@ -145,14 +149,14 @@ public abstract class BlockTFGiantBlock extends Block {
 	@Override
     @SideOnly(Side.CLIENT)
 	public boolean addDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
-		
+
     	int bx = (x >> 2) << 2;
     	int by = (y >> 2) << 2;
     	int bz = (z >> 2) << 2;
-		
+
 		Block blockThere = world.getBlock(x, y, z);
 		int metaThere = world.getBlockMetadata(x, y, z);
-		
+
         byte b0 = 16;
 
         for (int i1 = 0; i1 < b0; ++i1)
@@ -180,7 +184,7 @@ public abstract class BlockTFGiantBlock extends Block {
     public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player) {
 		this.setGiantBlockToAir(world, x, y, z);
     }
-    
+
     /**
      * Called when the block is destroyed by an explosion.
      * Useful for allowing the block to take into account tile entities,
@@ -198,7 +202,7 @@ public abstract class BlockTFGiantBlock extends Block {
 		this.setGiantBlockToAir(world, x, y, z);
     }
 
-    
+
     /**
      * Called on server worlds only when the block is about to be replaced by a different block or the same block with a
      * different metadata value. Args: world, x, y, z, old metadata
@@ -208,14 +212,14 @@ public abstract class BlockTFGiantBlock extends Block {
     		this.setGiantBlockToAir(world, x, y, z);
     	}
     }
-    
+
     /**
      * Set the whole giant block area to air
      */
     private void setGiantBlockToAir(World world, int x, int y, int z) {
     	// this flag is maybe not totally perfect
     	this.isSelfDestructing = true;
-    	
+
     	int bx = (x >> 2) << 2;
     	int by = (y >> 2) << 2;
     	int bz = (z >> 2) << 2;
@@ -231,7 +235,7 @@ public abstract class BlockTFGiantBlock extends Block {
     			}
     		}
     	}
-    	
+
     	this.isSelfDestructing = false;
 	}
 
@@ -241,7 +245,7 @@ public abstract class BlockTFGiantBlock extends Block {
      */
     public boolean canBlockStay(World world, int x, int y, int z)  {
         boolean allThisBlock = true;
-        
+
     	int bx = (x >> 2) << 2;
     	int by = (y >> 2) << 2;
     	int bz = (z >> 2) << 2;
@@ -253,10 +257,10 @@ public abstract class BlockTFGiantBlock extends Block {
     			}
     		}
     	}
-    	
+
     	return allThisBlock;
     }
-    
+
     /**
      * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
      * and stop pistons
